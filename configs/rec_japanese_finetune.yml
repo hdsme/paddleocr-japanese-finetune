@@ -10,7 +10,7 @@ Global:
   eval_batch_step: [0, 2000]
   cal_metric_during_train: true
   pretrained_model: /content/PaddleOCR/PP-OCRv5_mobile_rec_pretrained.pdparams
-  checkpoints: /content/output/rec_ppocr_v5/best_accuracy
+  checkpoints: 
   save_inference_dir:
   use_visualdl: false
   infer_img: /content/PaddleOCR/train_data/images/
