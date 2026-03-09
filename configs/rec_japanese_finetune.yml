@@ -2,7 +2,7 @@ Global:
   model_name: PP-OCRv5_mobile_rec # To use static model for inference.
   debug: false
   use_gpu: true
-  epoch_num: 50
+  epoch_num: 100
   log_smooth_window: 20
   print_batch_step: 10
   save_model_dir: /kaggle/working/output/PP-OCRv5_mobile_rec
@@ -103,7 +103,7 @@ Train:
   sampler:
     name: MultiScaleSampler
     scales: [[320, 32], [320, 48], [320, 64]]
-    first_bs: &bs 64
+    first_bs: &bs 128
     fix_bs: false
     divided_factor: [8, 16] # w, h
     is_training: True
@@ -136,5 +136,5 @@ Eval:
   loader:
     shuffle: false
     drop_last: false
-    batch_size_per_card: 64
+    batch_size_per_card: 128
     num_workers: 4
