@@ -5,7 +5,7 @@ Global:
   epoch_num: 10
   log_smooth_window: 20
   print_batch_step: 10
-  save_model_dir: /content/output/PP-OCRv5_mobile_rec
+  save_model_dir: /content/drive/MyDrive/Notebooks/output/PP-OCRv5_mobile_rec
   save_epoch_step: 10
   eval_batch_step: [0, 2000]
   cal_metric_during_train: true
@@ -103,7 +103,7 @@ Train:
   sampler:
     name: MultiScaleSampler
     scales: [[320, 32], [320, 48], [320, 64]]
-    first_bs: &bs 16
+    first_bs: &bs 64
     fix_bs: false
     divided_factor: [8, 16] # w, h
     is_training: True
@@ -136,5 +136,5 @@ Eval:
   loader:
     shuffle: false
     drop_last: false
-    batch_size_per_card: 16
+    batch_size_per_card: 64
     num_workers: 4
