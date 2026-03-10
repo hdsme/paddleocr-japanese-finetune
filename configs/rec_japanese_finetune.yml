@@ -2,7 +2,7 @@ Global:
   model_name: PP-OCRv5_mobile_rec # To use static model for inference.
   debug: false
   use_gpu: true
-  epoch_num: 100
+  epoch_num: 50
   log_smooth_window: 20
   print_batch_step: 10
   save_model_dir: /kaggle/working/output/PP-OCRv5_mobile_rec
@@ -15,7 +15,7 @@ Global:
   use_visualdl: false
   infer_img: /kaggle/working/PaddleOCR/train_data/images/
   character_dict_path: /kaggle/working/paddleocr-japanese-finetune/configs/japan_dict.txt
-  max_text_length: &max_text_length 25
+  max_text_length: &max_text_length 50
   infer_mode: false
   use_space_char: true
   distributed: true
