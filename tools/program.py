@@ -52,7 +52,7 @@ def save_on_huggingface(out_dir):
                 folder_path=out_dir,
                 repo_id="hdsme/hybrid-dino",
                 repo_type="model",
-                path_in_repo="paddle-ocr/out",
+                path_in_repo="paddle-ocr/output",
             )
         else:
             print('HUGGINGFACE_TOKEN is not set. Skip pushing to the hub.')
@@ -586,7 +586,7 @@ def train(
                         epoch=epoch,
                         global_step=global_step,
                     )
-                    save_on_huggingface('/kaggle/working/out')
+                    save_on_huggingface('/kaggle/working/output')
                 best_str = "best metric, {}".format(
                     ", ".join(
                         ["{}: {}".format(k, v) for k, v in best_model_dict.items()]
@@ -635,7 +635,7 @@ def train(
                 epoch=epoch,
                 global_step=global_step,
             )
-            save_on_huggingface('/kaggle/working/out')
+            save_on_huggingface('/kaggle/working/output')
             if log_writer is not None:
                 log_writer.log_model(is_best=False, prefix="latest")
 
@@ -665,7 +665,7 @@ def train(
                 global_step=global_step,
                 done_flag=epoch == config["Global"]["epoch_num"],
             )
-            save_on_huggingface('/kaggle/working/out')
+            save_on_huggingface('/kaggle/working/output')
             if log_writer is not None:
                 log_writer.log_model(
                     is_best=False, prefix="iter_epoch_{}".format(epoch)
