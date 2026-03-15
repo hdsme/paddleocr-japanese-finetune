@@ -10,7 +10,7 @@ Global:
   eval_batch_step: [0, 500]
   cal_metric_during_train: true
   pretrained_model: /kaggle/working/PaddleOCR/PP-OCRv5_mobile_rec_pretrained.pdparams
-  checkpoints: 
+  checkpoints: /kaggle/working/paddle-ocr/output/PP-OCRv5_mobile_rec
   save_inference_dir:
   use_visualdl: false
   infer_img: /kaggle/working/PaddleOCR/train_data/images/
