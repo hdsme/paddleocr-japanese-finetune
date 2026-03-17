@@ -15,7 +15,7 @@ Global:
   use_visualdl: false
   infer_img: /kaggle/working/PaddleOCR/train_data/images/
   character_dict_path: /kaggle/working/paddleocr-japanese-finetune/configs/japan_dict.txt
-  max_text_length: &max_text_length 25
+  max_text_length: &max_text_length 100
   infer_mode: false
   use_space_char: true
   distributed: true
@@ -87,7 +87,7 @@ Train:
         channel_first: false
     - RecConAug:
         prob: 0.5
-        ext_data_num: 2
+        ext_data_num: 1
         image_shape: [48, 320, 3]
         max_text_length: *max_text_length
     - RecAug:
@@ -103,7 +103,7 @@ Train:
   sampler:
     name: MultiScaleSampler
     scales: [[320, 32], [320, 48], [320, 64]]
-    first_bs: &bs 96
+    first_bs: &bs 64
     fix_bs: false
     divided_factor: [8, 16] # w, h
     is_training: True
@@ -111,7 +111,7 @@ Train:
     shuffle: true
     batch_size_per_card: *bs
     drop_last: true
-    num_workers: 8
+    num_workers: 12
 Eval:
   dataset:
     name: SimpleDataSet
@@ -136,5 +136,5 @@ Eval:
   loader:
     shuffle: false
     drop_last: false
-    batch_size_per_card: 96
-    num_workers: 4
+    batch_size_per_card: 128
+    num_workers: 8
