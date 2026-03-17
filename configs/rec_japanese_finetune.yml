@@ -87,8 +87,8 @@ Train:
         img_mode: BGR
         channel_first: false
     - RecConAug:
-        prob: 0.3
-        ext_data_num: 0
+        prob: 0.5
+        ext_data_num: 1
         image_shape: [48, 320, 3]
         max_text_length: *max_text_length
     - RecAug:
