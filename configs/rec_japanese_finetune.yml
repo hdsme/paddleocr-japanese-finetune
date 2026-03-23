@@ -1,4 +1,4 @@
- Global:
+Global:
   use_amp: true
   model_name: PP-OCRv5_mobile_rec # To use static model for inference.
   debug: false
