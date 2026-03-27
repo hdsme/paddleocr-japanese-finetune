@@ -125,7 +125,9 @@ class SimpleDataSet(Dataset):
             substr = data_line.strip("\n").split(self.delimiter)
             file_name = substr[0]
             file_name = self._try_parse_filename_list(file_name)
+            import jaconv
             label = substr[1]
+            label = jaconv.h2z(label)
             img_path = os.path.join(self.data_dir, file_name)
             data = {"img_path": img_path, "label": label}
             if not os.path.exists(img_path):
