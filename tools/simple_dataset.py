@@ -136,7 +136,12 @@ class SimpleDataSet(Dataset):
             data["ext_data"] = self.get_ext_data()
             data["filename"] = data["img_path"]
             outs = transform(data, self.ops)
-        except:
+        except Exception as e:
+            print("\n========== REAL ERROR ==========")
+            print("data_line:", data_line)
+            print("error:", repr(e))
+            print(traceback.format_exc())
+            raise
             self.logger.error(
                 "When parsing line {}, error happened with msg: {}".format(
                     data_line, traceback.format_exc()
