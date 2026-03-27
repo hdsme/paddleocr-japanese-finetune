@@ -17,8 +17,8 @@ Global:
   character_dict_path: ppocr/utils/ppocr_keys_v1.txt
   max_text_length: &max_text_length 20
   infer_mode: false
-  use_space_char: true
-  distributed: false
+  use_space_char: false
+  distributed: true
   save_res_path: ./output/rec/predicts_ppocrv3.txt
   d2s_train_image_shape: [3,48,320]
 
@@ -79,19 +79,19 @@ Train:
   dataset:
     name: SimpleDataSet
     data_dir: ./train_data/
-    # ext_op_transform_idx: 1
+    ext_op_transform_idx: 1
     label_file_list:
     - ./train_data/train_list.txt
     transforms:
     - DecodeImage:
         img_mode: BGR
         channel_first: false
-    # - RecConAug:
-    #     prob: 0.5
-    #     ext_data_num: 2
-    #     image_shape: [48, 320, 3]
-    #     max_text_length: *max_text_length
-    # - RecAug:
+    - RecConAug:
+        prob: 0.5
+        ext_data_num: 2
+        image_shape: [48, 320, 3]
+        max_text_length: *max_text_length
+    - RecAug:
     - MultiLabelEncode:
     - RecResizeImg:
         image_shape: [3, 48, 320]
@@ -106,7 +106,7 @@ Train:
     shuffle: true
     batch_size_per_card: 128
     drop_last: true
-    num_workers: 0
+    num_workers: 4
 Eval:
   dataset:
     name: SimpleDataSet
@@ -131,4 +131,4 @@ Eval:
     shuffle: false
     drop_last: false
     batch_size_per_card: 128
-    num_workers: 0
+    num_workers: 4
