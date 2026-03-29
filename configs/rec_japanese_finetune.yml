@@ -1,27 +1,25 @@
 Global:
-  use_amp: true
-  model_name: PP-OCRv5_mobile_rec # To use static model for inference.
+  model_name: japan_PP-OCRv3_mobile_rec
   debug: true
   use_gpu: true
-  epoch_num: 10
+  epoch_num: 500
   log_smooth_window: 20
   print_batch_step: 10
-  save_model_dir: /kaggle/working/output/PP-OCRv5_mobile_rec
+  save_model_dir: /kaggle/working/paddle-ocr/output/PP-OCRv5_mobile_rec
   save_epoch_step: 10
-  eval_batch_step: [0, 100]
+  eval_batch_step: [0, 2000]
   cal_metric_during_train: true
   pretrained_model: /kaggle/working/PaddleOCR/PP-OCRv5_mobile_rec_pretrained.pdparams
   checkpoints:
   save_inference_dir:
   use_visualdl: false
-  infer_img: /kaggle/working/PaddleOCR/train_data/images/
+  infer_img: doc/imgs_words/ch/word_1.jpg
   character_dict_path: /kaggle/working/paddleocr-japanese-finetune/configs/japan_dict.txt
   max_text_length: &max_text_length 10
   infer_mode: false
   use_space_char: true
   distributed: true
-  save_res_path: /kaggle/working/output/rec/predicts_ppocrv5.txt
-  d2s_train_image_shape: [3, 48, 320]
+  save_res_path: ./output/rec/predicts_ppocrv3_japan.txt
 
 
 Optimizer:
@@ -30,7 +28,7 @@ Optimizer:
   beta2: 0.999
   lr:
     name: Cosine
-    learning_rate: 0.0005
+    learning_rate: 0.001
     warmup_epoch: 5
   regularizer:
     name: L2
@@ -42,30 +40,32 @@ Architecture:
   algorithm: SVTR_LCNet
   Transform:
   Backbone:
-    name: PPLCNetV3
-    scale: 0.95
+    name: MobileNetV1Enhance
+    scale: 0.5
+    last_conv_stride: [1, 2]
+    last_pool_type: avg
+    last_pool_kernel_size: [2, 2]
   Head:
     name: MultiHead
     head_list:
       - CTCHead:
           Neck:
             name: svtr
-            dims: 120
+            dims: 64
             depth: 2
             hidden_dims: 120
-            kernel_size: [1, 3]
             use_guide: True
           Head:
             fc_decay: 0.00001
-      - NRTRHead:
-          nrtr_dim: 384
+      - SARHead:
+          enc_dim: 512
           max_text_length: *max_text_length
 
 Loss:
   name: MultiLoss
   loss_config_list:
     - CTCLoss:
-    - NRTRLoss:
+    - SARLoss:
 
 PostProcess:  
   name: CTCLabelDecode
@@ -73,69 +73,61 @@ PostProcess:
 Metric:
   name: RecMetric
   main_indicator: acc
+  ignore_space: False
 
 Train:
   dataset:
-    name: MultiScaleDataSet
-    ds_width: false
-    data_dir: ./train_data/
+    name: SimpleDataSet
+    data_dir: /kaggle/input/notebooks/haohoangofficial/japanese-dataset/train_data/train
     ext_op_transform_idx: 1
     label_file_list:
-    - ./train_data/train_list.txt
+    - /kaggle/input/notebooks/haohoangofficial/japanese-dataset/train_data/train_list.txt
     transforms:
     - DecodeImage:
         img_mode: BGR
         channel_first: false
     - RecConAug:
         prob: 0.5
-        ext_data_num: 1
+        ext_data_num: 2
         image_shape: [48, 320, 3]
-        max_text_length: *max_text_length
     - RecAug:
     - MultiLabelEncode:
-        gtc_encode: NRTRLabelEncode
-    - KeepKeys:
-        keep_keys:
-        - image
-        - label_ctc
-        - label_gtc
-        - length
-        - valid_ratio
-  sampler:
-    name: MultiScaleSampler
-    scales: [[320, 48]]
-    first_bs: &bs 64
-    fix_bs: false
-    divided_factor: [8, 16] # w, h
-    is_training: True
-  loader:
-    shuffle: true
-    batch_size_per_card: 16
-    drop_last: true
-    num_workers: 2
-Eval:
-  dataset:
-    name: SimpleDataSet
-    data_dir: ./train_data
-    label_file_list:
-    - ./train_data/val_list.txt
-    transforms:
-    - DecodeImage:
-        img_mode: BGR
-        channel_first: false
-    - MultiLabelEncode:
-        gtc_encode: NRTRLabelEncode
     - RecResizeImg:
         image_shape: [3, 48, 320]
     - KeepKeys:
         keep_keys:
         - image
         - label_ctc
-        - label_gtc
+        - label_sar
+        - length
+        - valid_ratio
+  loader:
+    shuffle: true
+    batch_size_per_card: 128
+    drop_last: true
+    num_workers: 4
+Eval:
+  dataset:
+    name: SimpleDataSet
+    data_dir: /kaggle/input/notebooks/haohoangofficial/japanese-dataset/train_data/val
+    label_file_list:
+    - /kaggle/input/notebooks/haohoangofficial/japanese-dataset/train_data/val_list.txt
+    transforms:
+    - DecodeImage:
+        img_mode: BGR
+        channel_first: false
+    - MultiLabelEncode:
+    - RecResizeImg:
+        image_shape: [3, 48, 320]
+    - KeepKeys:
+        keep_keys:
+        - image
+        - label_ctc
+        - label_sar
         - length
         - valid_ratio
   loader:
     shuffle: false
     drop_last: false
-    batch_size_per_card: 64
-    num_workers: 3
+    batch_size_per_card: 128
+    num_workers: 4
