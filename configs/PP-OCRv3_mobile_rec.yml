@@ -28,7 +28,7 @@ Optimizer:
   beta2: 0.999
   lr:
     name: Cosine
-    learning_rate: 0.001
+    learning_rate: 0.0005
     warmup_epoch: 5
   regularizer:
     name: L2
@@ -87,11 +87,12 @@ Train:
         img_mode: BGR
         channel_first: false
     - RecConAug:
-        prob: 0.5
+        prob: 0.8
         ext_data_num: 2
         image_shape: [48, 320, 3]
         max_text_length: *max_text_length
     - RecAug:
+        prob: 0.9
     - MultiLabelEncode:
     - RecResizeImg:
         image_shape: [3, 48, 320]
@@ -104,9 +105,9 @@ Train:
         - valid_ratio
   loader:
     shuffle: true
-    batch_size_per_card: 128
+    batch_size_per_card: 64
     drop_last: true
-    num_workers: 4
+    num_workers: 8
 Eval:
   dataset:
     name: SimpleDataSet
@@ -130,5 +131,5 @@ Eval:
   loader:
     shuffle: false
     drop_last: false
-    batch_size_per_card: 128
-    num_workers: 4
+    batch_size_per_card: 64
+    num_workers: 8
